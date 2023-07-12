@@ -1,16 +1,12 @@
 package com.brodygaudel.bankaccountmanagement.mapping.implementations;
 
-import com.brodygaudel.bankaccountmanagement.dtos.BankAccountDTO;
 import com.brodygaudel.bankaccountmanagement.dtos.CurrentBankAccountDTO;
 import com.brodygaudel.bankaccountmanagement.dtos.SavingBankAccountDTO;
-import com.brodygaudel.bankaccountmanagement.entities.BankAccount;
 import com.brodygaudel.bankaccountmanagement.entities.CurrentBankAccount;
 import com.brodygaudel.bankaccountmanagement.entities.SavingBankAccount;
 import com.brodygaudel.bankaccountmanagement.mapping.Mappers;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class MappersImpl implements Mappers {
@@ -23,16 +19,18 @@ public class MappersImpl implements Mappers {
      */
     @Override
     public SavingBankAccountDTO fromSavingBankAccount(@NotNull SavingBankAccount savingBankAccount) {
-        SavingBankAccountDTO savingBankAccountDTO = SavingBankAccountDTO.builder()
-                .id(savingBankAccount.getId())
-                .amount(savingBankAccount.getAmount())
-                .currency(savingBankAccount.getCurrency())
-                .status(savingBankAccount.getStatus())
-                .dateOfCreation(savingBankAccount.getDateOfCreation())
-                .dateOfLastUpdate(savingBankAccount.getDateOfLastUpdate())
-                .interestRate(savingBankAccount.getInterestRate())
-                .build();
+        SavingBankAccountDTO savingBankAccountDTO = new SavingBankAccountDTO();
+
+        savingBankAccountDTO.setId(savingBankAccount.getId());
+        savingBankAccountDTO.setAmount(savingBankAccount.getAmount());
+        savingBankAccountDTO.setCurrency(savingBankAccount.getCurrency());
+        savingBankAccountDTO.setCustomerId(savingBankAccount.getCustomerId());
+        savingBankAccountDTO.setStatus(savingBankAccount.getStatus());
+        savingBankAccountDTO.setDateOfCreation(savingBankAccount.getDateOfCreation());
+        savingBankAccountDTO.setDateOfLastUpdate(savingBankAccount.getDateOfLastUpdate());
         savingBankAccountDTO.setType(savingBankAccount.getClass().getSimpleName());
+        savingBankAccountDTO.setInterestRate(savingBankAccount.getInterestRate());
+
         return savingBankAccountDTO;
     }
 
@@ -50,6 +48,7 @@ public class MappersImpl implements Mappers {
         savingBankAccount.setCurrency(savingBankAccountDTO.getCurrency());
         savingBankAccount.setCustomerId(savingBankAccountDTO.getCustomerId());
         savingBankAccount.setDateOfCreation(savingBankAccountDTO.getDateOfCreation());
+        savingBankAccount.setAmount(savingBankAccountDTO.getAmount());
         savingBankAccount.setDateOfLastUpdate(savingBankAccountDTO.getDateOfLastUpdate());
         savingBankAccount.setStatus(savingBankAccountDTO.getStatus());
         return savingBankAccount;
@@ -63,17 +62,19 @@ public class MappersImpl implements Mappers {
      */
     @Override
     public CurrentBankAccountDTO fromCurrentBankAccount(@NotNull CurrentBankAccount currentBankAccount) {
-        CurrentBankAccountDTO currentBankAccountDTO = CurrentBankAccountDTO.builder()
-                .id(currentBankAccount.getId())
-                .amount(currentBankAccount.getAmount())
-                .currency(currentBankAccount.getCurrency())
-                .status(currentBankAccount.getStatus())
-                .dateOfCreation(currentBankAccount.getDateOfCreation())
-                .dateOfLastUpdate(currentBankAccount.getDateOfLastUpdate())
-                .overDraft(currentBankAccount.getOverDraft())
-                .build();
+        CurrentBankAccountDTO currentBankAccountDTO = new CurrentBankAccountDTO();
+
+        currentBankAccountDTO.setId(currentBankAccount.getId());
+        currentBankAccountDTO.setAmount(currentBankAccount.getAmount());
+        currentBankAccountDTO.setCurrency(currentBankAccount.getCurrency());
+        currentBankAccountDTO.setStatus(currentBankAccount.getStatus());
+        currentBankAccountDTO.setDateOfCreation(currentBankAccount.getDateOfCreation());
+        currentBankAccountDTO.setDateOfLastUpdate(currentBankAccount.getDateOfLastUpdate());
+        currentBankAccountDTO.setOverDraft(currentBankAccount.getOverDraft());
         currentBankAccountDTO.setType(currentBankAccount.getClass().getSimpleName());
-        return null;
+        currentBankAccountDTO.setCustomerId(currentBankAccount.getCustomerId());
+
+        return currentBankAccountDTO;
     }
 
     /**
@@ -96,31 +97,4 @@ public class MappersImpl implements Mappers {
         return currentBankAccount;
     }
 
-    /**
-     * Converts list of BankAccount object to a list of BankAccountDTO object.
-     *
-     * @param bankAccounts list of BankAccount object to be converted
-     * @return list of BankAccountDTO converted
-     */
-    @Override
-    public List<BankAccountDTO> fromListOfBankAccounts(@NotNull List<BankAccount> bankAccounts) {
-        return bankAccounts.stream().map(this::fromBankAccount).toList();
-    }
-
-    /**
-     * map BankAccount to BankAccountDTO
-     *
-     * @param bankAccount BankAccount to be mapped
-     * @return bankAccountDTO mapped
-     */
-    @Override
-    public BankAccountDTO fromBankAccount(BankAccount bankAccount) {
-        if (bankAccount instanceof SavingBankAccount savingBankAccount) {
-            return fromSavingBankAccount(savingBankAccount);
-        } else if (bankAccount instanceof CurrentBankAccount currentBankAccount) {
-            return fromCurrentBankAccount(currentBankAccount);
-        }else {
-            throw new IllegalArgumentException("Unsupported Bank Account Type");
-        }
-    }
 }

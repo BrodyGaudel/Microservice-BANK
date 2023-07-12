@@ -1,13 +1,9 @@
 package com.brodygaudel.bankaccountmanagement.mapping;
 
-import com.brodygaudel.bankaccountmanagement.dtos.BankAccountDTO;
 import com.brodygaudel.bankaccountmanagement.dtos.CurrentBankAccountDTO;
 import com.brodygaudel.bankaccountmanagement.dtos.SavingBankAccountDTO;
-import com.brodygaudel.bankaccountmanagement.entities.BankAccount;
 import com.brodygaudel.bankaccountmanagement.entities.CurrentBankAccount;
 import com.brodygaudel.bankaccountmanagement.entities.SavingBankAccount;
-
-import java.util.List;
 
 
 public interface Mappers {
@@ -42,21 +38,5 @@ public interface Mappers {
      * @return the CurrentBankAccount object representing the converted CurrentBankAccountDTO
      */
     CurrentBankAccount fromCurrentBankAccountDTO(CurrentBankAccountDTO currentBankAccountDTO);
-
-    /**
-     * Converts list of BankAccount object to a list of BankAccountDTO object.
-     * @param bankAccounts list of BankAccount object to be converted
-     * @return list of BankAccountDTO converted
-     */
-    List<BankAccountDTO> fromListOfBankAccounts(List<BankAccount> bankAccounts);
-
-
-    /**
-     * map BankAccount to BankAccountDTO
-     * @param bankAccount BankAccount to be mapped
-     * @return bankAccountDTO mapped
-     */
-    BankAccountDTO  fromBankAccount(BankAccount bankAccount);
-
 }
 

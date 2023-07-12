@@ -29,7 +29,7 @@ public abstract class BankAccount {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private Long customerId;
 
     private Date dateOfCreation;

@@ -50,7 +50,13 @@ public class BankAccountServiceImpl implements BankAccountService {
         BankAccount bankAccount = bankAccountRepository.findById(id)
                 .orElseThrow( () -> new BankAccountNotFoundException("Bank Account Not Found"));
         log.info("bank account found");
-        return mappers.fromBankAccount(bankAccount);
+        if (bankAccount instanceof SavingBankAccount savingBankAccount) {
+            return mappers.fromSavingBankAccount(savingBankAccount);
+        } else if (bankAccount instanceof CurrentBankAccount currentBankAccount) {
+            return mappers.fromCurrentBankAccount(currentBankAccount);
+        }else {
+            throw new IllegalArgumentException("Unsupported Bank Account Type");
+        }
     }
 
     /**
@@ -61,7 +67,8 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public List<BankAccountDTO> getAllBankAccounts() {
         List<BankAccount> bankAccounts = bankAccountRepository.findAll();
-        return mappers.fromListOfBankAccounts(bankAccounts);
+        log.info("all bank account returned");
+        return fromListOfBankAccount(bankAccounts);
     }
 
     /**
@@ -73,7 +80,8 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public List<BankAccountDTO> getBankAccountsByCustomerId(Long id) {
         List<BankAccount> bankAccountList = bankAccountRepository.findByCustomerId(id);
-        return mappers.fromListOfBankAccounts(bankAccountList);
+        log.info("return all bank accounts for customer with id :"+id);
+        return fromListOfBankAccount(bankAccountList);
     }
 
     /**
@@ -94,9 +102,9 @@ public class BankAccountServiceImpl implements BankAccountService {
         currentBankAccount.setDateOfLastUpdate(null);
         currentBankAccount.setId(autoGenerate());
         currentBankAccount.setDateOfCreation(new Date());
-        BankAccount bankAccount = bankAccountRepository.save(currentBankAccount);
+        CurrentBankAccount bankAccount = bankAccountRepository.save(currentBankAccount);
         log.info("current bank account saved");
-        return mappers.fromBankAccount(bankAccount);
+        return mappers.fromCurrentBankAccount(bankAccount);
     }
 
     /**
@@ -116,9 +124,9 @@ public class BankAccountServiceImpl implements BankAccountService {
         savingBankAccount.setDateOfLastUpdate(null);
         savingBankAccount.setId(autoGenerate());
         savingBankAccount.setDateOfCreation(new Date());
-        BankAccount bankAccount = bankAccountRepository.save(savingBankAccount);
+        SavingBankAccount bankAccount = bankAccountRepository.save(savingBankAccount);
         log.info("saving bank account saved");
-        return mappers.fromBankAccount(bankAccount);
+        return mappers.fromSavingBankAccount(bankAccount);
     }
 
     /**
@@ -137,7 +145,13 @@ public class BankAccountServiceImpl implements BankAccountService {
         bankAccount.setDateOfLastUpdate(new Date());
         BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
         log.info("bank account updated");
-        return mappers.fromBankAccount(savedBankAccount);
+        if (savedBankAccount instanceof SavingBankAccount savingBankAccount) {
+            return mappers.fromSavingBankAccount(savingBankAccount);
+        } else if (bankAccount instanceof CurrentBankAccount currentBankAccount) {
+            return mappers.fromCurrentBankAccount(currentBankAccount);
+        }else {
+            throw new IllegalArgumentException("Unsupported Bank Account Type");
+        }
     }
 
 
@@ -146,12 +160,23 @@ public class BankAccountServiceImpl implements BankAccountService {
      * @return Bank Account Number as a String
      */
     private @NotNull String autoGenerate(){
-        log.info("in autoGenerate()");
         Long lastId = compterRepository.findMaxId().orElse(1000000L);
         Long newId = lastId + 1;
         compterRepository.save(new Compter(newId));
-        log.info("id generated");
         LocalDate currentDate = LocalDate.now();
         return newId.toString() + currentDate.getYear();
+    }
+
+    private List<BankAccountDTO> fromListOfBankAccount(@NotNull List<BankAccount> bankAccounts){
+        return bankAccounts.stream()
+                .map(bankAccount -> {
+                    if(bankAccount instanceof SavingBankAccount savingBankAccount){
+                        return mappers.fromSavingBankAccount(savingBankAccount);
+                    } else if (bankAccount instanceof CurrentBankAccount currentBankAccount ) {
+                        return mappers.fromCurrentBankAccount(currentBankAccount);
+                    }else {
+                        throw new IllegalArgumentException("Unsupported Bank Account Type :");
+                    }
+                }).toList();
     }
 }
