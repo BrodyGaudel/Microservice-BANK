@@ -29,8 +29,6 @@ The Gateway service acts as an entry point for external requests. It handles aut
 Make sure you have the following dependencies installed:
 
 - Java 17
-- Spring Boot
-- Spring Cloud
 - Maven
 - MySQL
 
@@ -39,7 +37,7 @@ Make sure you have the following dependencies installed:
 1. Clone the E-BANK repository.
 
 ```
-git clone https://github.com/yourusername/e-bank.git
+git clone https://github.com/BrodyGaudel/Microservice-BANK.git
 ```
 
 2. Configure the database settings in the `application.properties` file of each microservice.
@@ -64,8 +62,8 @@ spring.datasource.password=password
 3. Build the microservices using Maven.
 
 ```
-cd e-bank
-mvn clean install
+under each microservives: mvn clean install
+
 ```
 
 4. Start the microservices in the following order:
@@ -105,4 +103,4 @@ The E-BANK application is open-source and released under the [MIT License](https
 
 ## Contact
 
-For any inquiries or additional information, please contact the E-BANK development team at ebank@example.com.
+For any inquiries or additional information, please contact the E-BANK development team at brodymounanga@gmail.com
